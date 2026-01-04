@@ -48,13 +48,14 @@ git clone https://github.com/SimulatedLife/search-ml.git
 cd search-ml
 ```
 
+```text
 # Inside master.sh
 
 # Ensure these subdirectories exist inside that path:
 # - /datasets (containing 'drugbank' and 'fda' folders)
 # - /scripts
 # - /models
-
+```
 ---
 
 ## 📥 Installation Guide
