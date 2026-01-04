@@ -51,7 +51,7 @@ This repository provides two primary execution scripts:
 SEARCH-ML must be installed using the following layout:
 
 ```text
-SEARCH_ML_HOME/  
+search-ml/  
 ├── datasets/  
 │   ├── drugbank/  
 │   ├── fda/  
