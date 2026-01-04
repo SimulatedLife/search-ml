@@ -1,134 +1,352 @@
-# 📖 Search-ML: Complete User Manual
-
-**Version:** 1.3.1  
-**Date:** December 14, 2025  
-**Author:** Dheeraj Kumar Chaurasia (SCFBio, IIT Delhi)
-
----
-
-## 1. Overview
-**Search-ML** is a serial execution pipeline designed to automate the virtual screening of protein-ligand complexes against high-value databases (**DrugBank** and **FDA**). This tool integrates structure preparation (AmberTools), feature extraction (Python), and machine learning predictions into a single command.
-
-This script is optimized for the **Master Node** or interactive workstations and does **not** require a job scheduler (like PBS/Slurm).
-
----
-
-## 2. Syntax & Execution
-
-### ⚠️ Critical Execution Rule
-**Do NOT use `sh` to run this script.**
-This script uses Bash-specific features (process substitution). Always use `bash` or execute directly.
-
-* ✅ **Correct:** `bash master.sh ...`
-* ✅ **Correct:** `./master.sh ...`
-* ❌ **Incorrect:** `sh master.sh ...` (Will cause `syntax error near unexpected token >`)
-
-### Command Structure
-```bash
-./master.sh <PDB_FILENAME> <LIGAND_CODE> <DATABASE>
-```
-## Step-by-Step Examples
-
-This section provides concrete scenarios to help you understand how to run the script for different databases.
-
-### Scenario A: Screening against DrugBank (DB)
-**Goal:** You want to screen the protein-ligand complex `4dfr.pdb` against the DrugBank database. The ligand inside the PDB file is named `MTX`.
-
-1.  **Check your files:**
-    Ensure `4dfr.pdb` is in your current directory.
-2.  **Run the command:**
-    ```bash
-    bash master.sh 4dfr.pdb MTX DB
-    ```
-3.  **Verify:**
-    The script will create a directory (e.g., `1734177600`). Inside, check `results.csv` for the affinity scores.
-
-### Scenario B: Screening against FDA Approved Drugs (FDA)
-**Goal:** You have a target protein file named `target_prot.pdb` with a co-crystallized ligand named `LIG`. You want to find FDA-approved drugs that might bind to this pocket.
-
-1.  **Check your files:**
-    Ensure `target_prot.pdb` is in your current directory.
-2.  **Run the command:**
-    ```bash
-    ./master.sh target_prot.pdb LIG FDA
-    ```
-    *(Note: We use `target_prot` with the `.pdb` extension)*
-3.  **Verify:**
-    Check the `job.log` inside the new folder to ensure `tleap` and feature calculation finished without errors.
-
-### Scenario C: Handling Non-Standard File Names
-**Goal:** Your file is named `my_experiment_v2.pdb` and the ligand is `DRG`.
-
-1.  **Run the command:**
-    ```bash
-    bash master.sh my_experiment_v2.pdb DRG DB
-    ```
-
-## Output Explanation
-
-When the job runs, it automatically creates a unique directory named after the **current Unix timestamp** (e.g., `1734177600`) to prevent overwriting previous results.
-
-### Directory Structure & File Descriptions
-
-Inside the job directory, you will find the following files:
-
-| File | Description |
-| :--- | :--- |
-| **`results.csv`** | **The Main Output.** Contains the predicted binding affinity scores for your target against the selected database. |
-| **`job.log`** | **Execution Log.** Captures all standard output (STDOUT) and errors (STDERR). Check this first if a job fails. |
-| **`args.txt`** | **Input Record.** Logs the exact arguments (`PDB`, `LIG`, `DB`) used for this run. |
-| **`PROT.pdb`** | **Cleaned Protein.** The protein structure extracted from your input file, stripped of the ligand and waters. |
-| **`PROT_LIG.pdb`** | **Complex Structure.** The merged protein-ligand complex used for feature calculation. |
-| **`leap.log`** | **AmberTools Log.** detailed output from `tleap`. Useful for debugging atom type or parameterization errors. |
-| **`COMPLETED`** | **Success Flag.** An empty file created only if the script reaches the end successfully. |
-
-
-## Workflow Logic
-
-This is what happens under the hood when you execute the script:
-
-1.  **Validation:**
-    * Checks if the input PDB file exists.
-    * Verifies that the protein chain is valid (> 24 amino acids).
-2.  **Preparation:**
-    * Splits the input PDB into `PROT.pdb` (Protein only) and `lig` (Ligand code).
-    * Combines them into a clean `PROT_LIG.pdb`.
-3.  **Parameterization:**
-    * Runs `tleap` (AmberTools) to generate topology and check for missing atoms.
-4.  **Featurization:**
-    * Calculates physicochemical properties using RDKit/Python.
-    * Calculates Pocket Volume and Solvent Accessible Surface Area (SASA).
-5.  **Merging:**
-    * Combines protein features and ligand features into a unified dataset.
-6.  **Prediction:**
-    * Runs the pre-trained Machine Learning models (`screening.py`) to generate affinity scores.
-  
-## Troubleshooting
-
-### Error: `syntax error near unexpected token >`
-* **Cause:** You ran the script with `sh scriptname.sh`.
-* **Fix:** Run it with `bash scriptname.sh` or `./scriptname.sh`.
-
-### Error: `Protein size must be >= 25 amino acids`
-* **Cause:** The input PDB has fewer than 25 residues, or the script failed to detect standard amino acids (ALA, ARG, etc.).
-* **Fix:** Check your PDB file format. Ensure it uses standard PDB naming conventions for residues.
-
-### Error: `SEARCH_ML_HOME directory not found`
-* **Cause:** The path in the script does not match your machine's file structure.
-* **Fix:** Execute the following commands on the terminal:
-* ```bash
-  conda env config vars set SEARCH_ML="$(pwd)" --name search-ml
-  conda activate search-ml
-  ```
-### Error: `HOME directory not found`
-* **Cause:** The hardcoded path in the script does not match your machine's file structure.
-* **Fix:** Open `master.sh` and edit the `export HOME="..."` line to point to your `search-ml` folder.
-
-## Copyright & Contact
+# SEARCH-ML Virtual Screening Suite
+**Usage Guide (`usage.md`)**
 
 **Author:** Dheeraj Kumar Chaurasia  
 **Affiliation:** Supercomputing Facility for Bioinformatics and Computational Biology (SCFBio), IIT Delhi  
-**Email:** [dheeraj@scfbio-iitd.res.in](mailto:dheeraj@scfbio-iitd.res.in)
+**Email:** dheeraj@scfbio-iitd.res.in  
 
-Copyright (c) 2025 SCFBio, IIT Delhi. All rights reserved.
+---
 
+## Overview
+
+SEARCH-ML is a **serial virtual screening framework** for structure-based drug discovery and target identification.  
+It supports both **forward virtual screening** (protein → ligands) and **reverse virtual screening** (ligand → protein targets).
+
+This repository provides two primary execution scripts:
+
+| Script | Purpose |
+|------|--------|
+| `master_screening.sh` | Forward virtual screening (Protein–Ligand based) |
+| `master_reverse_screening.sh` | Reverse screening / Target identification |
+
+### Key Features
+
+- Serial execution (master node / interactive session)
+- Multiple screening modes:
+  - DrugBank
+  - FDA-approved drugs
+  - BIMP (Bioactivity of Indian Medicinal Plants)
+  - Single molecule
+  - Custom ligand library
+- Automatic job directory creation
+- Robust error handling with job state flags
+- Machine-learning–based prediction pipeline
+
+---
+
+## Intended Usage
+
+- HPC master node
+- Interactive compute session
+- Local Linux/macOS workstation
+
+**Not intended for direct batch submission unless externally wrapped.**
+
+
+## Expected Directory Structure
+
+SEARCH-ML must be installed using the following layout:
+
+SEARCH_ML_HOME/  
+├── datasets/  
+│   ├── drugbank/  
+│   ├── fda/  
+│   ├── bimp/  
+│   ├── HOMO/  
+│   └── ...  
+├── scripts/  
+│   ├── protein_features.py  
+│   ├── pocket_features.py  
+│   ├── merge_protein_features.py  
+│   ├── calculate_ligand_features.py  
+│   ├── screening.py  
+│   ├── reverse_screening.py  
+│   ├── convert_mol.py  
+│   └── ...  
+├── models/  
+│   ├── *.pkl  
+│   ├── *.joblib  
+│   └── ...  
+├── parameters/  
+│   ├── *.txt  
+│   ├── *.csv  
+│   └── ...  
+├── master_screening.sh  
+└── master_reverse_screening.sh  
+
+All datasets, scripts, models, and parameters are dynamically linked at runtime.
+
+---
+
+## Job Execution Layout
+
+Each execution creates a unique job directory using a UNIX timestamp:
+
+working_directory/  
+├── 1704029384/  
+│   ├── job.log  
+│   ├── results.txt  
+│   ├── dataset.csv  
+│   ├── RUNNING  
+│   ├── COMPLETED / FAILED  
+│   └── error.log  
+
+
+
+## Environment Setup
+
+### Mandatory Environment Variable
+
+SEARCH-ML requires the following environment variable:
+
+SEARCH_ML_HOME=/absolute/path/to/SEARCH_ML_HOME
+
+Temporary example:
+
+export SEARCH_ML_HOME=/home/user/SEARCH_ML_HOME
+
+Recommended (Conda):
+
+conda env config vars set SEARCH_ML_HOME=/home/user/SEARCH_ML_HOME --name <env_name>  
+conda deactivate <env_name>  
+conda activate <env_name>
+
+---
+
+## Execution Mode
+
+- Serial execution only
+- Intended for:
+  - Master node execution
+  - Interactive HPC jobs
+  - Local Linux/macOS systems
+
+---
+
+## Software Requirements
+
+### System Utilities
+
+- bash
+- grep
+- awk
+- cut
+- sort
+- tee
+
+### Scientific Software
+
+- Python ≥ 3.9
+- RDKit
+- NumPy
+- Pandas
+- scikit-learn
+- AmberTools (`tleap`)
+
+All Python utilities are executed from `$SEARCH_ML_HOME/scripts`.
+
+
+## Forward Screening Inputs
+
+### Protein Input
+
+- Format: PDB
+- Must contain:
+  - Standard amino acid residues
+  - At least **25 amino acids**
+- Ligand must be present in the structure
+
+Example:
+
+1abc.pdb
+
+---
+
+### Ligand Residue Code
+
+- Passed as command-line argument
+- Must match residue name in PDB
+
+Example:
+
+LIG
+
+---
+
+## Ligand Input Files (Mode-Specific)
+
+| Mode | Required File | Location |
+|----|----|----|
+| DB | None | Auto-linked |
+| FDA | None | Auto-linked |
+| BIMP | None | Auto-linked |
+| SINGLE | single_molecule.sdf / .pdb / .smi | Parent directory |
+| CUSTOM | custom_molecules.sdf | Parent directory |
+| Reverse | query_ligand.sdf / .pdb / .smi | Parent directory |
+
+
+## Forward Virtual Screening (`master_screening.sh`)
+
+### Syntax
+
+./master_screening.sh <PDB_FILE> <LIGAND_CODE> <MODE>
+
+---
+
+### Arguments
+
+| Argument | Description |
+|-------|------------|
+| PDB_FILE | Protein PDB file (with extension) |
+| LIGAND_CODE | Ligand residue name |
+| MODE | Screening mode |
+
+---
+
+### Supported Screening Modes
+
+| Mode | Description |
+|----|------------|
+| DB | DrugBank screening |
+| FDA | FDA-approved drug screening |
+| BIMP | BIMP compound screening |
+| SINGLE | Single molecule screening |
+| CUSTOM | Custom ligand library screening |
+
+
+## Screening Mode Details
+
+### DB / FDA / BIMP
+
+- Uses precomputed ligand datasets
+- Links ML models automatically
+- Loads parameter files
+- No ligand preprocessing required
+
+---
+
+### SINGLE Mode
+
+- Auto-detects:
+  - single_molecule.sdf
+  - single_molecule.pdb
+  - single_molecule.smi
+- Converts input to Ligand.sdf
+- Computes ligand features
+- Screens against protein target
+
+---
+
+### CUSTOM Mode
+
+- Requires custom_molecules.sdf
+- Processes entire ligand library
+- Computes descriptors for all molecules
+
+---
+
+### Forward Screening Examples
+
+./master_screening.sh 1abc.pdb LIG DB  
+./master_screening.sh 1abc.pdb LIG FDA  
+./master_screening.sh 1abc.pdb LIG BIMP  
+./master_screening.sh 1abc.pdb LIG SINGLE  
+./master_screening.sh 1abc.pdb LIG CUSTOM  
+
+
+## Reverse Virtual Screening (`master_reverse_screening.sh`)
+
+### Purpose
+
+- Target identification
+- Ligand-based reverse screening
+- Screens against **Homo sapiens protein dataset only**
+
+---
+
+### Syntax
+
+./master_reverse_screening.sh
+
+(No arguments required)
+
+---
+
+### Input Requirements
+
+One of the following must exist in the parent directory:
+
+query_ligand.sdf  
+query_ligand.pdb  
+query_ligand.smi  
+
+---
+
+### Workflow
+
+1. Ligand normalization → Ligand.sdf  
+2. Ligand feature calculation  
+3. Reverse screening prediction  
+4. Target ranking
+
+---
+
+### Example
+
+./master_reverse_screening.sh
+
+
+
+## Output Files
+
+| File | Description |
+|----|------------|
+| job.log | Complete stdout and stderr |
+| results.txt | Screening predictions |
+| dataset.csv | Ligand feature dataset |
+| args.txt | Input arguments (forward screening only) |
+| error.log | Error details |
+
+---
+
+## Job State Flags
+
+| File | Meaning |
+|----|--------|
+| RUNNING | Job currently executing |
+| COMPLETED | Job finished successfully |
+| FAILED | Job terminated due to error |
+
+---
+
+## Exit Codes
+
+| Code | Meaning |
+|----|--------|
+| 1 | SEARCH_ML_HOME not set |
+| 2 | Input file missing |
+| 3 | Protein length < 25 residues |
+| 4 | SINGLE mode input missing |
+| 5 | CUSTOM mode input missing |
+| 6 | Invalid screening mode |
+
+---
+
+## Notes and Best Practices
+
+- Serial execution only
+- Do not submit directly to batch schedulers
+- Ensure ligand residue name matches PDB
+- Do not rename internal scripts
+- Keep datasets and models read-only
+- Always inspect job.log for diagnostics
+
+---
+
+## Citation
+
+If you use SEARCH-ML in your research, please cite:
+
+Chaurasia DK et al.  
+*Exploring chemical space for drug-like small molecules in the age of AI*  
+Frontiers in Molecular Biosciences, 2025
