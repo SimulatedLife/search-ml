@@ -149,7 +149,7 @@ The script accepts three mandatory positional arguments:
 | **$2** | `LIGAND_CODE` | The Residue Name of the co-crystallized ligand. | 3-letter uppercase code matching the PDB entry. Used to define the active site. | `LIG`, `ATP`, `HEM` |
 | **$3** | `MODE` | The screening library or input mode. | Must be one of: `DB`, `FDA`, `BIMP`, `SINGLE`, `CUSTOM`. | `DB` |
 
-## Reverse Virtual Screening (`master_reverse_screening.sh`)
+## Reverse Virtual Screening (`master_screening_reverse.sh`)
 
 ### Purpose
 
@@ -162,7 +162,7 @@ The script accepts three mandatory positional arguments:
 ### Syntax
 
 ```bash
-./master_reverse_screening.sh
+./master_screening_reverse.sh
 ```
 
 (No arguments required)
@@ -185,7 +185,7 @@ One of the following must exist in the parent directory:
 ### Example
 
 ```bash
-./master_reverse_screening.sh
+./master_screening_reverse.sh
 ```
 
 ## Output Files
