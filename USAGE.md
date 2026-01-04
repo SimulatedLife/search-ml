@@ -39,7 +39,6 @@ This section provides concrete scenarios to help you understand how to run the s
 2.  **Run the command:**
     ```bash
     bash master.sh 4dfr.pdb MTX DB
-    bash master.sh 4dfr MTX DB
     ```
 3.  **Verify:**
     The script will create a directory (e.g., `1734177600`). Inside, check `results.csv` for the affinity scores.
@@ -52,7 +51,6 @@ This section provides concrete scenarios to help you understand how to run the s
 2.  **Run the command:**
     ```bash
     ./master.sh target_prot.pdb LIG FDA
-    ./master.sh target_prot LIG FDA
     ```
     *(Note: We use `target_prot` with the `.pdb` extension)*
 3.  **Verify:**
@@ -64,7 +62,6 @@ This section provides concrete scenarios to help you understand how to run the s
 1.  **Run the command:**
     ```bash
     bash master.sh my_experiment_v2.pdb DRG DB
-    bash master.sh my_experiment_v2 DRG DB
     ```
 
 ## Output Explanation
