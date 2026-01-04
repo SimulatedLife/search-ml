@@ -80,7 +80,7 @@ search-ml/
 │   ├── final_cat_model.joblib  
 │   ├── final_lgbm_model.joblib  
 │   ├── final_meta_model.joblib  
-│   ├── final_rf_model.joblib     # **[Click here to download this model](https://scfbio.iitd.ac.in/search-ml/download.php)**
+│   ├── final_rf_model.joblib     # download this model from here https://scfbio.iitd.ac.in/search-ml/download.php
 │   ├── final_xgb_model.joblib  
 │   └── scaler_final.joblib  
 │
