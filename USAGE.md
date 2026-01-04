@@ -232,10 +232,3 @@ One of the following must exist in the parent directory:
 - **Always inspect `job.log` for diagnostics.**
 
 ---
-
-## Citation
-
-If you use SEARCH-ML in your research, please cite:
-
-> Chaurasia DK et al.  
-> *Exploring chemical space for drug-like small molecules in the age of AI* > Frontiers in Molecular Biosciences, 2025
