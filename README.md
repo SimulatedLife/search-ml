@@ -54,7 +54,6 @@ cd search-ml
 # - /datasets (containing 'drugbank' and 'fda' folders)
 # - /scripts
 # - /models
-```
 
 ---
 
@@ -65,7 +64,7 @@ We provide an automated installer (`install.sh`) that sets up the Conda environm
 ### Step 1: Clone the Repository
 Open your terminal and run:
 ```bash
-git clone https://github.com/dheeraj-scfbio/search-ml.git
+git clone https://github.com/SimulatedLife/search-ml.git
 cd search-ml
 ```
 
@@ -79,18 +78,31 @@ The pre-trained Random Forest model (~800MB) is too large for GitHub and is host
     ```
 
 ### Step 3: Run the Automated Installer
-This script will detect your Conda installation, create the `search-ml` environment, install all dependencies (AmberTools, RDKit, etc.), and configure the project path.
+This script will detect your Conda installation, create the `search-ml` environment, install all dependencies (AmberTools, RDKit, scikit-learn, etc.), and automatically configure the project paths.
 
 ```bash
 chmod +x install.sh
 ./install.sh
 ```
 
-### Step 4: Activate the Environment
-Once the installer finishes, activate the environment to start using the tool:
+⚠️ Important Note: > The installation process involves downloading large packages (such as AmberTools). Depending on your internet connection speed and system configuration (disk I/O, CPU), this process may take anywhere from 10 to 30 minutes. Please be patient and do not interrupt the installation once it starts.
+
+### Step 4: Configure Environment (If Required)
+*Note: The `install.sh` script usually handles this automatically. Only perform this step if the variable is missing.*
+
+To verify and manually configure the `SEARCH_ML_HOME` path:
 
 ```bash
-conda env config vars set SEARCH_ML="$(pwd)" --name search-ml
+# 1. Deactivate the conda or other activated environment
+conda deactivate
+
+# 2. Check if the variable is set
+echo $SEARCH_ML_HOME
+
+# 3. IF the output is empty, run the following to set it:
+conda env config vars set SEARCH_ML_HOME="$(pwd)" --name search-ml
+
+# 4. Reload environment to apply changes
 conda activate search-ml
 ```
 
@@ -103,7 +115,6 @@ This script is designed for **serial execution** on a Master Node or Workstation
 ### Syntax
 ```bash
 ./master.sh <PDB_FILENAME> <LIGAND_CODE> <DATABASE>
-./master.sh <PDB_FILENAME> <LIGAND_CODE> <MODE>
 ```
 
 ### Argument Breakdown
@@ -121,7 +132,6 @@ This script is designed for **serial execution** on a Master Node or Workstation
 Screening protein `9kte.pdb` containing ligand `9UM`:
 ```bash
 bash master.sh 9kte.pdb 9UM DB
-bash master.sh 9kte 9UM DB
 ```
 
 For detailed usage instructions, please read [USAGE.md](USAGE.md).
@@ -156,7 +166,7 @@ sudo apt-get install git -y
 Now you can download the Search-ML code:
 
 ```bash
-git clone "https://github.com/dheeraj-scfbio/search-ml.git"
+git clone "https://github.com/SimulatedLife/search-ml.git"
 cd search-ml
 ```
 
@@ -178,12 +188,30 @@ chmod +x install.sh
 ./install.sh
 ```
 
-### Step 6: Activate and Run
-Once the installation finishes:
+⚠️ Important Note: > The installation process involves downloading large packages (such as AmberTools). Depending on your internet connection speed and system configuration (disk I/O, CPU), this process may take anywhere from 10 to 30 minutes. Please be patient and do not interrupt the installation once it starts.
+
+### Step 6: Configure Environment (If Required)
+*Note: The `install.sh` script usually handles this automatically. Only perform this step if the variable is missing.*
+
+To verify and manually configure the `SEARCH_ML_HOME` path:
 
 ```bash
-conda env config vars set SEARCH_ML="$(pwd)" --name search-ml
+# 1. Deactivate the conda or other activated environment
+conda deactivate
+
+# 2. Check if the variable is set
+echo $SEARCH_ML_HOME
+
+# 3. IF the output is empty, run the following to set it:
+conda env config vars set SEARCH_ML_HOME="$(pwd)" --name search-ml
+
+# 4. Reload environment to apply changes
 conda activate search-ml
-./master.sh 9kte.pdb 9UM DB
-./master.sh 9kte 9UM DB
 ```
+
+**Screening against DrugBank**
+Screening protein `9kte.pdb` containing ligand `9UM`:
+```bash
+bash master.sh 9kte.pdb 9UM DB
+```
+
