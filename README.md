@@ -48,14 +48,54 @@ git clone https://github.com/SimulatedLife/search-ml.git
 cd search-ml
 ```
 
-```text
-# Inside master.sh
+## Expected Directory Structure after cloning git repository
 
-# Ensure these subdirectories exist inside that path:
-# - /datasets (containing 'drugbank' and 'fda' folders)
-# - /scripts
-# - /models
+SEARCH-ML must be installed using the following layout:
+
+```text
+search-ml/  
+├── datasets/  
+│   ├── drugbank/  
+│   ├── fda/  
+│   ├── bimp/  
+│   └── HOMO/  
+│
+├── example/  
+│   ├── 9kte.pdb  
+│   ├── single_molecule.sdf  
+│   ├── custom_molecules.sdf  
+│   └── query_molecule.sdf 
+│ 
+├── scripts/  
+│   ├── protein_features.py  
+│   ├── pocket_features.py  
+│   ├── merge_protein_features.py  
+│   ├── ligand_features.py  
+│   ├── screening.py  
+│   ├── reverse_screening.py  
+│   ├── convert_mol.py  
+│   └── leap.cmd
+│
+├── models/  
+│   ├── final_cat_model.joblib  
+│   ├── final_lgbm_model.joblib  
+│   ├── final_meta_model.joblib  
+│   ├── final_rf_model.joblib     # **[Click here to download this model](https://scfbio.iitd.ac.in/search-ml/download.php)**
+│   ├── final_xgb_model.joblib  
+│   └── scaler_final.joblib  
+│
+├── parameters/  
+│   ├── final_ensemble_model_order.txt  
+│   └── parameter.txt 
+│ 
+├── environment.yml
+├── install.sh
+├── README.md
+├── USAGE.md
+├── master_screening.sh
+└── master_screening_reverse.sh
 ```
+
 ---
 
 ## 📥 Installation Guide
