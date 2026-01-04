@@ -19,7 +19,7 @@ This repository provides two primary execution scripts:
 | Script | Purpose |
 |------|--------|
 | `master_screening.sh` | Forward virtual screening (Protein–Ligand based) |
-| `master_reverse_screening.sh` | Reverse screening / Target identification |
+| `master_screening_reverse.sh` | Reverse screening / Target identification |
 
 ### Key Features
 
@@ -56,27 +56,42 @@ SEARCH_ML_HOME/
 │   ├── drugbank/  
 │   ├── fda/  
 │   ├── bimp/  
-│   ├── HOMO/  
-│   └── ...  
+│   └── HOMO/  
+│
+├── example/  
+│   ├── 9kte.pdb  
+│   ├── single_molecule.sdf  
+│   ├── custom_molecules.sdf  
+│   └── query_molecule.sdf 
+│ 
 ├── scripts/  
 │   ├── protein_features.py  
 │   ├── pocket_features.py  
 │   ├── merge_protein_features.py  
-│   ├── calculate_ligand_features.py  
+│   ├── ligand_features.py  
 │   ├── screening.py  
 │   ├── reverse_screening.py  
 │   ├── convert_mol.py  
-│   └── ...  
+│   └── leap.cmd
+│
 ├── models/  
-│   ├── *.pkl  
-│   ├── *.joblib  
-│   └── ...  
+│   ├── final_cat_model.joblib  
+│   ├── final_lgbm_model.joblib  
+│   ├── final_meta_model.joblib  
+│   ├── final_rf_model.joblib  
+│   ├── final_xgb_model.joblib  
+│   └── scaler_final.joblib  
+│
 ├── parameters/  
-│   ├── *.txt  
-│   ├── *.csv  
-│   └── ...  
-├── master_screening.sh  
-└── master_reverse_screening.sh
+│   ├── final_ensemble_model_order.txt  
+│   └── parameter.txt 
+│ 
+├── environment.yml
+├── install.sh
+├── README.md
+├── USAGE.md
+├── master_screening.sh
+└── master_screening_reverse.sh
 ```
 
 ## Forward Screening Inputs
@@ -124,6 +139,15 @@ Depending on the chosen `MODE`, specific files may be required in the directory.
 ```bash
 ./master_screening.sh <PDB_FILE> <LIGAND_CODE> <MODE>
 ```
+### Argument Breakdown
+
+The script accepts three mandatory positional arguments:
+
+| Position | Argument | Description | Format / constraints | Example |
+| :--- | :--- | :--- | :--- | :--- |
+| **$1** | `PDB_FILE` | The input protein structure file. | Must be a valid `.pdb` file containing the receptor and a co-crystallized ligand. | `1abc.pdb` |
+| **$2** | `LIGAND_CODE` | The Residue Name of the co-crystallized ligand. | 3-letter uppercase code matching the PDB entry. Used to define the active site. | `LIG`, `ATP`, `HEM` |
+| **$3** | `MODE` | The screening library or input mode. | Must be one of: `DB`, `FDA`, `BIMP`, `SINGLE`, `CUSTOM`. | `DB` |
 
 ## Reverse Virtual Screening (`master_reverse_screening.sh`)
 
