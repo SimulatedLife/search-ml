@@ -226,7 +226,7 @@ Now run the automated setup script. This works exactly the same as on Linux.
 
 ```bash
 chmod +x install.sh
-./install.sh
+bash install.sh
 ```
 
 ⚠️ Important Note: > The installation process involves downloading large packages (such as AmberTools). Depending on your internet connection speed and system configuration (disk I/O, CPU), this process may take anywhere from 10 to 30 minutes. Please be patient and do not interrupt the installation once it starts.
