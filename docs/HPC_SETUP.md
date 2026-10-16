@@ -264,19 +264,6 @@ backed up before it is rewritten; running jobs are not affected.
 details and `scheduler.out` has the batch system's output. Jobs that hit the time limit
 or run out of memory are reported as such on the website (from `sacct` on SLURM).
 
-## Moving from the old set-up
-
-The previous portal logged in with a password and ran `/scf-data/baitoc/SEARCH-ML/run_job.sh`.
-
-1. Install as above (the `baitoc` account and the existing `/scf-data` area are fine).
-2. To keep old job links working, set `JOBS_DIR=/scf-data/baitoc/SEARCH-ML/JOBS`.
-   `searchml-hpc status` understands the old `RUNNING` / `COMPLETED` / `FAILED` flag
-   files and the old 32-partition `progress.json` files, and old results are served
-   as before.
-3. Switch the portal to key authentication (step 5), then **change the old password**,
-   which was stored in the previous portal's source code.
-4. Keep `run_job.sh` until no old jobs are running, then remove it.
-
 ## Security checklist
 
 - [ ] The web server's key is in `authorized_keys` **with** the `command="…searchml-gateway"` prefix.
