@@ -1,0 +1,25 @@
+# SEARCH-ML conda environment
+#   conda env create -f environment.yml        (or: mamba env create -f environment.yml)
+#
+# The machine-learning libraries are pinned to the exact versions the models were
+# trained/serialised with - do not upgrade scikit-learn, xgboost, lightgbm or
+# catboost unless you also re-export the models.
+name: search-ml
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - ambertools=24.8      # tleap (structure standardisation)
+  - rdkit=2024.09        # ligand descriptors, 3D embedding
+  - numpy=1.26.4
+  - pandas=2.3.3
+  - scipy=1.15.3
+  - joblib=1.5.2
+  - tqdm
+  - pip
+  - pip:
+      - scikit-learn==1.7.1
+      - xgboost==3.0.4
+      - lightgbm==4.6.0
+      - catboost==1.2.8
+      - biopython==1.86

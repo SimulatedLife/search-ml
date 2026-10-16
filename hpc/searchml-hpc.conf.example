@@ -1,0 +1,68 @@
+# ==============================================================================
+# SEARCH-ML HPC configuration  (copy to hpc/searchml-hpc.conf, or let
+# hpc/install_hpc.sh write it for you)
+#
+# Format: KEY=VALUE, one per line. "~" and $VARS are expanded. No shell code is
+# executed - this file is parsed, not sourced.
+# ==============================================================================
+
+# ---- Paths -------------------------------------------------------------------
+# Repository root (scripts/, models/, datasets/, config/)
+SEARCH_ML_HOME=/home/searchml/search-ml
+# Where job folders are created. Must be on a filesystem visible to the compute
+# nodes (shared /home, /scratch or a project area). The web server never needs
+# direct access to it - it goes through searchml-hpc over SSH.
+JOBS_DIR=/home/searchml/searchml-jobs
+# Optional: datasets / models in another location (defaults: $SEARCH_ML_HOME/datasets, /models)
+DATASETS_DIR=
+MODELS_DIR=
+
+# ---- Python environment --------------------------------------------------------
+# Conda installation and environment created by install.sh
+CONDA_BASE=/home/searchml/miniforge3
+CONDA_ENV=search-ml
+# Or point directly at the environment's python (overrides the two lines above)
+PYTHON=
+# Environment modules to load inside batch jobs (space separated), if your site needs them
+MODULES=
+
+# ---- Scheduler -----------------------------------------------------------------
+# local : run jobs on this machine in the background (no batch system)
+# slurm : submit with sbatch      pbs : submit with qsub (PBS Pro / Torque)
+SCHEDULER=local
+# local only: how many jobs may run at the same time (others wait in a queue)
+MAX_LOCAL_JOBS=2
+# Refuse new submissions when this many jobs are queued or running
+MAX_ACTIVE_JOBS=50
+
+# Resources. "small" = DrugBank, FDA, BIMP, single molecule, custom library,
+# reverse screening; "large" = ChEMBL, COCONUT, MolPort, PubChem, ZINC (see
+# config/databases.tsv). The scoring step uses one worker process per CPU for
+# large libraries; each worker needs ~2-3 GB of RAM (models are shared).
+SMALL_CPUS=4
+SMALL_MEM=16G
+SMALL_TIME=02:00:00
+LARGE_CPUS=16
+LARGE_MEM=96G
+LARGE_TIME=24:00:00
+# SLURM partition / PBS queue, account and QoS (leave empty for the defaults)
+PARTITION=
+ACCOUNT=
+QOS=
+# Extra scheduler options, e.g. EXTRA_SBATCH=--constraint=avx2 --exclude=node07
+EXTRA_SBATCH=
+EXTRA_QSUB=
+
+# ---- Results & limits ------------------------------------------------------------
+# Keep only the N best-scoring molecules for large libraries (0 = keep everything;
+# a full PubChem result is several GB)
+RESULT_LIMIT_LARGE=100000
+# Rows sent to the web portal for the interactive table
+PREVIEW_ROWS=2000
+# Compress results.csv to results.csv.gz above this size (MB)
+GZIP_RESULTS_MB=50
+# Upload limits enforced on the HPC side as well
+MAX_UPLOAD_MB=50
+MAX_CUSTOM_MOLECULES=5000
+# 'searchml-hpc cleanup' deletes finished jobs older than this (0 = never)
+JOB_RETENTION_DAYS=30

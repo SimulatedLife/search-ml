@@ -1,0 +1,24 @@
+# SEARCH-ML target (protein pocket) libraries for reverse screening.
+# Columns (tab-separated): key  aliases  label  path  size
+#   path : directory holding protein.csv(.gz) or parts/, relative to the datasets folder or absolute.
+# Only HOMO (Homo sapiens) ships with the GitHub repository; place the other libraries on the
+# server and adjust the paths below (the web portal greys out libraries that are not installed).
+homo	HOMO,HUMAN	Homo sapiens	HOMO	small
+all	ALL	All organisms and taxa	reverse/all	large
+arabidopsis		Arabidopsis thaliana	reverse/arabidopsis	small
+bos		Bos taurus	reverse/bos	small
+drosophila		Drosophila melanogaster	reverse/drosophila	small
+ecoli		Escherichia coli	reverse/ecoli	small
+gallus		Gallus gallus	reverse/gallus	small
+hiv		Human immunodeficiency virus	reverse/hiv	small
+mus		Mus musculus	reverse/mus	small
+mtb		Mycobacterium tuberculosis	reverse/mtb	small
+rattus		Rattus norvegicus	reverse/rattus	small
+saccharomyces		Saccharomyces cerevisiae	reverse/saccharomyces	small
+sarscov2		SARS-CoV-2	reverse/sarscov2	small
+staphylococcus		Staphylococcus aureus	reverse/staphylococcus	small
+sus		Sus scrofa	reverse/sus	small
+eukaryota		Eukaryota	reverse/eukaryota	large
+bacteria		Bacteria	reverse/bacteria	large
+archaea		Archaea	reverse/archaea	small
+riboviria		Riboviria (RNA viruses)	reverse/riboviria	small

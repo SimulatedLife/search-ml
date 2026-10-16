@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# searchml-hpc - SEARCH-ML job manager for the HPC side (see hpc/README.md).
+# Finds the Python of the search-ml conda environment (or any python3) and runs
+# hpc/lib/searchml_hpc.py, which only needs the Python standard library.
+set -u
+SELF="${BASH_SOURCE[0]}"
+while [ -L "$SELF" ]; do
+  DIR="$(cd -P "$(dirname "$SELF")" && pwd)"; SELF="$(readlink "$SELF")"
+  [[ "$SELF" != /* ]] && SELF="$DIR/$SELF"
+done
+HERE="$(cd -P "$(dirname "$SELF")" && pwd)"
+CONF="${SEARCHML_HPC_CONF:-$HERE/../searchml-hpc.conf}"
+
+conf_get() {  # conf_get KEY  -> value (quotes and trailing comments stripped)
+  [ -f "$CONF" ] || return 0
+  sed -n "s/^[[:space:]]*$1[[:space:]]*=[[:space:]]*//p" "$CONF" | tail -n 1 |
+    sed -e 's/[[:space:]]#.*$//' -e 's/[[:space:]]*$//' -e "s/^[\"']//" -e "s/[\"']\$//"
+}
+
+PY="$(conf_get PYTHON)"
+if [ -z "$PY" ]; then
+  BASE="$(conf_get CONDA_BASE)"; ENVN="$(conf_get CONDA_ENV)"; ENVN="${ENVN:-search-ml}"
+  BASE="${BASE/#\~/$HOME}"
+  [ -n "$BASE" ] && [ -x "$BASE/envs/$ENVN/bin/python" ] && PY="$BASE/envs/$ENVN/bin/python"
+fi
+PY="${PY/#\~/$HOME}"
+if [ -z "$PY" ] || [ ! -x "$PY" ]; then PY="$(command -v python3 || command -v python)"; fi
+if [ -z "$PY" ]; then echo '{"ok":false,"error":"python3 not found on the HPC"}'; exit 1; fi
+export SEARCHML_HPC_CONF="$CONF"
+exec "$PY" "$HERE/../lib/searchml_hpc.py" "$@"

@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    name: Shell & Python syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: bash -n
+        run: |
+          for f in install.sh master_screening.sh master_screening_reverse.sh hpc/install_hpc.sh \
+                   hpc/bin/searchml-hpc hpc/bin/searchml-gateway hpc/templates/*.sh; do
+            bash -n "$f" && echo "ok  $f"
+          done
+      - name: shellcheck (errors only)
+        run: shellcheck -S error install.sh master_screening.sh master_screening_reverse.sh hpc/install_hpc.sh hpc/bin/searchml-hpc hpc/bin/searchml-gateway
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: py_compile
+        run: python -m py_compile scripts/*.py hpc/lib/*.py tests/*.py
+
+  tests:
+    name: Unit & integration tests (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install test dependencies
+        # scikit-learn must match the version the scaler / meta-model were saved with
+        run: pip install "numpy<2.3" "pandas>=2.2,<3" "scikit-learn==1.7.1" "joblib>=1.4"
+      - name: Run tests
+        run: python -m unittest discover -s tests -v

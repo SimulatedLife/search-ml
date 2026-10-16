@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use SEARCH-ML, please cite it as below."
+title: "SEARCH-ML: Screening & Ensemble Analysis for Receptors and Chemical Hits with Machine Learning"
+abstract: >-
+  A stacked machine-learning ensemble (XGBoost, CatBoost, Random Forest, LightGBM and a
+  Ridge meta-model) for high-throughput forward and reverse virtual screening of
+  protein-ligand binding affinity.
+type: software
+version: 2.0.0
+date-released: 2026-10-15
+authors:
+  - family-names: Chaurasia
+    given-names: Dheeraj Kumar
+    affiliation: "Supercomputing Facility for Bioinformatics and Computational Biology (SCFBio), IIT Delhi"
+    email: dheeraj@scfbio-iitd.res.in
+repository-code: "https://github.com/SimulatedLife/search-ml"
+url: "https://scfbio.iitd.ac.in/search-ml/"
+keywords:
+  - virtual screening
+  - drug discovery
+  - binding affinity
+  - machine learning
+  - target identification

@@ -1,0 +1,15 @@
+# SEARCH-ML compound libraries for forward screening.
+# Columns (tab-separated): key  aliases  label  path  size
+#   path : directory or CSV file, relative to the datasets folder ($SEARCHML_DATASETS,
+#          default $SEARCH_ML_HOME/datasets) or absolute. A directory may hold
+#          dataset.csv(.gz) or a parts/ folder of CSV chunks; count.txt (row count) is optional.
+#   size : small | large  (large libraries run with parallel workers and a top-N limit)
+# The numeric aliases 1-8 match the database IDs used by the original web portal.
+bimp	BIMP,1	BIMP (Indian medicinal plant phytochemicals)	bimp	small
+chembl	CHEMBL,2	ChEMBL	chembl	large
+coconut	COCONUT,3	COCONUT natural products	coconut	large
+drugbank	DB,DRUGBANK,4	DrugBank	drugbank	small
+fda	FDA,5	FDA-approved drugs	fda	small
+molport	MOLPORT,6	MolPort	molport	large
+pubchem	PUBCHEM,7	PubChem	pubchem	large
+zinc	ZINC,8	ZINC	zinc	large

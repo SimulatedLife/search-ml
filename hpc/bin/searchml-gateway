@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# searchml-gateway - restricts an SSH key to SEARCH-ML operations only.
+#
+# Put this in ~/.ssh/authorized_keys of the HPC service account (one line):
+#   command="/path/to/search-ml/hpc/bin/searchml-gateway",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty ssh-ed25519 AAAA... searchml-web
+#
+# The web server can then only run searchml-hpc commands (ping, prepare, put,
+# submit, status, get, cancel, cleanup) and scp files inside JOBS_DIR - no shell.
+HERE="$(cd -P "$(dirname "$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || echo "${BASH_SOURCE[0]}")")" && pwd)"
+exec "$HERE/searchml-hpc" --gateway "${SSH_ORIGINAL_COMMAND:-}"

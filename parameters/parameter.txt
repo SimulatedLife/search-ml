@@ -1,0 +1,12 @@
+MolWt: 200.0,480.0
+MolLogP: -0.40,5.00
+TPSA: 0.00,131.60
+NumHDonors: 0,5
+NumHAcceptors: 0,10
+NumRotatableBonds: 0,10
+NumAromaticRings: 0,7
+NumHeteroatoms: 2,130
+NumAtoms: 20,70
+MolMR: 40.0,130.0
+NumCarbons: 5,200
+

@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.DS_Store
+# large model not stored in git (download from the web portal)
+models/final_rf_model.joblib
+# local HPC configuration (contains site-specific paths)
+hpc/searchml-hpc.conf
+hpc/searchml-hpc.conf.bak.*
+# job folders created by the command-line tools
+[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/
+[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_*/
+example/[0-9]*/
+
